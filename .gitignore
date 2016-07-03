@@ -87,3 +87,13 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Ignore MacOS X files
+.DS_Store
+
+/node_modules
+node_modules
+.tmp
+.sass-cache
+bower_components
+npm-debug.log

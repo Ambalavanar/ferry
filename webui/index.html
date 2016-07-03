@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link href='https://fonts.googleapis.com/css?family=Ruda' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <base href="/" />
+</head>
+    <body ng-app="ferryApp" layout="row" ng-controller="NavController" ng-cloak>
+        <md-sidenav class="site-sidenav md-sidenav-left md-whiteframe-z2"
+                md-component-id="left" hide-print
+                md-is-locked-open="$mdMedia('gt-sm')">
+
+            <header class="nav-header">
+                <a ng-href="/" class="app-logo">
+                    <img src="/imgs/icons/ferry-logo.svg" style="height: 50px; width: 150px">
+                </a>
+            </header>
+
+            <md-content flex role="navigation">
+                <ul class="docs-menu">
+                    <li ng-repeat="section in sections" class="parent-list-item {{section.className || ''}}" ng-class="{'parentActive' : isSectionSelected(section)}">
+                        <h2 class="menu-heading md-subhead" ng-if="section.type === 'heading'" id="heading_{{section.name | nospace }}">
+                            {{section.name}}
+                        </h2>
+                        <menu-link section="section" ng-if="section.type === 'link' && !section.hidden"></menu-link>
+                        <menu-toggle section="section" ng-if="section.type === 'toggle' && !section.hidden"></menu-toggle>
+                        <ul ng-if="section.children" class="menu-nested-list">
+                            <li ng-repeat="child in section.children" ng-class="{'childActive' : isSectionSelected(child)}">
+                            <menu-link section="child" ng-if="child.type === 'link'"></menu-link>
+                            <menu-toggle section="child" ng-if="child.type === 'toggle'"></menu-toggle>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </md-content>
+        </md-sidenav>
+
+    <div layout="column" tabIndex="-1" role="main" flex>
+        <md-toolbar class="md-whiteframe-glow-z1 site-content-toolbar">
+            <div class="md-toolbar-tools docs-toolbar-tools" tabIndex="-1">
+                <md-button class="md-icon-button" ng-click="openMenu()" hide-gt-sm aria-label="Toggle Menu">
+                <md-icon md-svg-src="imgs/icons/ic_menu_24px.svg"></md-icon>
+                </md-button>
+                <div layout="row" flex class="fill-height">
+                    <h2 class="md-toolbar-item md-breadcrumb md-headline">
+                        <span ng-if="currentPage.name !== currentSection.name">
+                        <span hide-sm hide-md>{{currentSection.name}}</span>
+                        <span class="docs-menu-separator-icon" hide-sm hide-md style="transform: translate3d(0, 1px, 0)">
+                            <span class="_md-visually-hidden">-</span>
+                            <md-icon
+                                aria-hidden="true"
+                                md-svg-src="/imgs/icons/ic_chevron_right_24px.svg"
+                                style="margin-top: -2px"></md-icon>
+                        </span>
+                        </span>
+                        <span class="md-breadcrumb-page">{{currentPage | humanizeDoc}}</span>
+                    </h2>
+                    <span flex></span> <!-- use up the empty space -->
+                </div>
+            </div>
+        </md-toolbar>
+
+        <md-content md-scroll-y layout="column" flex>
+            <div ng-view layout-padding flex="noshrink" class="docs-ng-view"></div>
+
+            <div layout="row" flex="noshrink" layout-align="center center">
+                <div id="license-footer" flex>
+                Ferry &copy;2016.
+                Code licensed under the <a ng-href="./license"  class="md-accent">MIT License</a>.
+                Contact <a href="mailto:ambalavanar.thiru@gmail.com" class="md-accent">ambalavanar.thiru@gmail.com</a>
+                </div>
+            </div>
+        </md-content>
+    </div>
+
+    <script src="/node_modules/angular/angular.js"></script>
+    <script src="/node_modules/angular-aria/angular-aria.js"></script>
+    <script src="/node_modules/angular-animate/angular-animate.js"></script>
+    <script src="/node_modules/angular-material/angular-material.js"></script>
+    <script src="/node_modules/angular-messages/angular-messages.js"></script>
+    <script src="/node_modules/angular-route/angular-route.js"></script>
+    <script src="/js/ng-app/app.js"></script>
+    <script src="/js/ng-app/nav-controller.js"></script>
+    <script src="/js/ng-app/home/home-controller.js"></script>
+    <script src="/js/ng-app/data_dictionary/connections-controller.js"></script>
+
+</body>
+</html>

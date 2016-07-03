@@ -1,0 +1,333 @@
+<div ng-cloak>
+  <md-content>
+    <md-tabs md-dynamic-height md-border-bottom>
+
+        <md-tab label="Connections">
+        <md-content class="md-padding">
+          <md-list flex>
+                <md-subheader class="md-no-sticky">Data Source Connections</md-subheader>
+                <md-divider ></md-divider>
+                <md-list-item class="md-3-line" ng-repeat="item in connections" ng-click="null">
+                <md-icon md-svg-icon="icon-database" ng-if="item.connectionType.indexOf('SQL') > 0"></md-icon>
+                <md-icon md-svg-icon="icon-hdfs" ng-if="item.connectionType.indexOf('HDFS') >= 0"></md-icon>
+                <md-icon md-svg-icon="icon-messages" ng-if="item.connectionType.indexOf('MQ') > 0"></md-icon>
+                <md-icon md-svg-icon="icon-api" ng-if="item.connectionType.indexOf('REST') >= 0"></md-icon>
+                <md-icon md-svg-icon="icon-excel" ng-if="item.connectionType.indexOf('EXCEL') >= 0"></md-icon>
+                <md-icon md-svg-icon="icon-csv" ng-if="item.connectionType.indexOf('CSV') >= 0"></md-icon>
+                <div class="md-list-item-text" layout="row">
+                    <div layout="column" flex="90">
+                        <h3>{{ item.connectionName }}</h3>
+                        <h4>{{ item.connectionType }}</h4>
+                        <p>{{ item.connectionString }}</p>
+                    </div>
+                    <div layout="row" layout-align="end center">
+                        <div layout="column" flex="50">
+                            <md-button class="md-icon-button" aria-label="{{'Modify ' + item.connectionName}}"><md-icon md-svg-icon="icon-edit"></md-icon></md-button>
+                        </div>
+                        <div layout="column" flex="50">
+                            <md-button class="md-icon-button" aria-label="{{'Delete ' + item.connectionName}}"><md-icon md-svg-icon="icon-delete"></md-icon></md-button>
+                        </div>
+                    </div>
+                </div>
+                <md-divider ></md-divider>
+                </md-list-item>
+            </md-list>
+        </md-content>
+      </md-tab>
+      
+      
+      <md-tab label="New Connection">
+        <md-content class="md-padding">
+            <div>
+            <form name="connectionForm">
+                <md-subheader>Connection Info</md-subheader>
+                <div layout-gt-xs="row">
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Connection Name</label>
+                        <input ng-model="newConn.connectionName" required />
+                        <div ng-messages="newConn.connectionName.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must enter a connection name.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>Connection Type</label>
+                        <md-select ng-model="newConn.dataStoreTypeCode" required>
+                        <md-option ng-repeat="dType in dataStoreTypes" value="{{dType.dataStoreTypeCode}}">
+                            {{dType.dataStoreTypeName}}
+                        </md-option>
+                        </md-select>
+                        <div ng-messages="newConn.dataStoreTypeCode.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must select a connection type.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout-gt-sm="row">
+                    <md-input-container class="md-block" flex-gt-sm>
+                        <label>Connection Description</label>
+                        <input ng-model="theMax">
+                    </md-input-container>
+                </div>
+
+                <!-- Database related input -->
+                <md-subheader ng-if="isDatabase(newConn.dataStoreTypeCode)">Database Access Info</md-subheader>
+                <div layout-gt-sm="row" ng-if="isDatabase(newConn.dataStoreTypeCode)">
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Hostname</label>
+                        <input ng-model="newConn.hostName" ng-required="isDatabase(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.hostName.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must enter a host name or IP address.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Port</label>
+                        <input ng-model="newConn.port" ng-required="isDatabase(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.port.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must enter a port number.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>SID / Instance Name</label>
+                        <input ng-model="newConn.sid" ng-required="isDatabase(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.sid.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must enter SID / Service Name / Instance Name.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex-gt-xs>
+                        <label>Default Schema</label>
+                        <input ng-model="newConn.defaultSchema" ng-required="isDatabase(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.defaultSchema.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must enter SID / Service Name / Instance Name.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout-gt-sm="row" ng-if="isDatabase(newConn.dataStoreTypeCode)">
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Username</label>
+                        <input ng-model="newConn.username" ng-required="isDatabase(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.username.$error" role="alert">
+                            <div ng-message="required" class="my-message">Username must be entered.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Password</label>
+                        <input type="password" ng-model="newConn.password" ng-required="isDatabase(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.password.$error" role="alert">
+                            <div ng-message="required" class="my-message">Password must be entered.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+                <!-- File related input -->
+                <md-subheader ng-if="isFile(newConn.dataStoreTypeCode)">File Access Info</md-subheader>
+                <div layout-gt-sm="row" ng-if="isFile(newConn.dataStoreTypeCode)">
+                    <md-input-container class="md-block"  flex="25">
+                        <label>File Access Method</label>
+                        <md-select ng-model="newConn.fileAccessMethod"  ng-required="isFile(newConn.dataStoreTypeCode)" >
+                            <md-option value="NETWORK">Network Folder</md-option>
+                            <md-option value="FTP">FTP</md-option>
+                        </md-select>
+                        <div ng-messages="newConn.fileAccessMethod.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must select a connection type.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex="50">
+                        <label>File Path</label>
+                        <input ng-model="newConn.filePath" ng-required="isFile(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.filePath.$error" role="alert">
+                            <div ng-message="required" class="my-message">File Path must be entered.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout-gt-sm="row" ng-if="isFile(newConn.dataStoreTypeCode)">
+                    <md-input-container class="md-block" flex="25" ng-show="newConn.fileAccessMethod === 'FTP'">
+                        <label>FTP Hostname</label>
+                        <input ng-model="newConn.ftpHostname" ng-required="isFile(newConn.dataStoreTypeCode) && newConn.fileAccessMethod === 'FTP'" />
+                        <div ng-messages="newConn.ftpHostname.$error" role="alert">
+                            <div ng-message="required" class="my-message">FTP server hostname must be entered.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Username</label>
+                        <input ng-model="newConn.fileUsername" ng-required="isFile(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.fileUsername.$error" role="alert">
+                            <div ng-message="required" class="my-message">Username must be entered.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Password</label>
+                        <input type="password" ng-model="newConn.filePassword" ng-required="isFile(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.filePassword.$error" role="alert">
+                            <div ng-message="required" class="my-message">Password must be entered.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+
+                <!-- Delimited File related input -->
+                <div layout-gt-sm="row" ng-if="newConn.dataStoreTypeCode === 'CSV'">
+                    <md-input-container class="md-block" flex="25">
+                        <label>Delimiter</label>
+                        <input ng-model="newConn.delimiter" ng-required="isFile(newConn.dataStoreTypeCode) && newConn.dataStoreTypeCode === 'CSV'" />
+                        <div ng-messages="newConn.delimiter.$error" role="alert">
+                            <div ng-message="required" class="my-message">Delimiter must be provided.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex="1">
+                        <md-checkbox ng-model="newConn.textQualifierFlag" />
+                    </md-input-container>
+                    <md-input-container class="md-block" flex="25">
+                        <label>Text Qualifier</label>
+                        <input ng-model="newConn.textQualifier" ng-disabled="!newConn.textQualifierFlag" ng-required="isFile(newConn.dataStoreTypeCode) && newConn.dataStoreTypeCode === 'CSV' && newConn.textQualifierFlag" />
+                        <div ng-messages="newConn.textQualifier.$error" role="alert">
+                            <div ng-message="required" class="my-message">Delimiter must be provided.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container class="md-block" flex="25">
+                        <md-checkbox ng-model="newConn.hasHeader">
+                            Contains Header
+                        </md-checkbox>
+                    </md-input-container>
+                </div>
+
+                <!-- HDFS related input -->
+                <md-subheader ng-if="isHDFS(newConn.dataStoreTypeCode)">HDFS Access Info</md-subheader>
+                <div layout-gt-sm="row" ng-if="newConn.dataStoreTypeCode === 'HDFS'">
+                    <md-input-container class="md-block"  flex="50">
+                        <label>HDFS URL</label>
+                        <input ng-model="newConn.hdfsUrl" ng-required="isHDFS(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.hdfsUrl.$error" role="alert">
+                            <div ng-message="required" class="my-message">You must enter a HDFS URL.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Username</label>
+                        <input ng-model="newConn.hdfsUsername"  />
+                        <div ng-messages="newConn.hdfsUsername.$error" role="alert">
+                            <div ng-message="required" class="my-message">Username must be entered.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Password</label>
+                        <input type="password" ng-model="newConn.hdfsPassword"  />
+                        <div ng-messages="newConn.hdfsPassword.$error" role="alert">
+                            <div ng-message="required" class="my-message">Password must be entered.</div>
+                        </div>  
+                    </md-input-container>
+                </div>
+
+                <!-- REST related input -->
+                <md-subheader ng-if="isWebService(newConn.dataStoreTypeCode)">API Access Info</md-subheader>
+                <div layout-gt-sm="row" ng-if="isWebService(newConn.dataStoreTypeCode)">
+                    <md-input-container class="md-block" flex="100">
+                        <label>REST URL</label>
+                        <input ng-model="newConn.restURL" ng-required="isWebService(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.filePath.$error" role="alert">
+                            <div ng-message="required" class="my-message">REST Url must be entered.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout-gt-sm="row" ng-if="isWebService(newConn.dataStoreTypeCode)">
+                    <md-input-container class="md-block"  flex="25">
+                        <label>Auth Type</label>
+                        <md-select ng-model="newConn.authType"  ng-required="isWebService(newConn.dataStoreTypeCode)" >
+                            <md-option value="NONE">None</md-option>
+                            <md-option value="BASIC">Basic</md-option>
+                            <md-option value="OAUTH2">Outh 2.0</md-option>
+                        </md-select>
+                        <div ng-messages="newConn.authType.$error" role="alert">
+                            <div ng-message="required" class="my-message">Auth type must be selected.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'BASIC'" flex-gt-xs>
+                        <label>Username</label>
+                        <input ng-model="newConn.webUsername" ng-required="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'BASIC'" />
+                        <div ng-messages="newConn.webUsername.$error" role="alert">
+                            <div ng-message="required" class="my-message">Username must be entered.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'BASIC'" flex-gt-xs>
+                        <label>Password</label>
+                        <input type="password" ng-model="newConn.webPassword" ng-required="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'BASIC'"/>
+                        <div ng-messages="newConn.webPassword.$error" role="alert">
+                            <div ng-message="required" class="my-message">Password must be entered.</div>
+                        </div>  
+                    </md-input-container>
+                    <md-input-container flex="75" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'" flex-gt-xs>
+                        <label>Auth URL</label>
+                        <input ng-model="newConn.authURL" ng-required="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'" />
+                        <div ng-messages="newConn.authURL.$error" role="alert">
+                            <div ng-message="required" class="my-message">Auth URL must be entered.</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout-gt-sm="row" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'">
+                    <md-input-container flex="25" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'" flex-gt-xs>
+                        &nbsp;
+                    </md-input-container>
+                    <md-input-container flex="25" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'" flex-gt-xs>
+                        <label>Client ID</label>
+                        <input type="text" ng-model="newConn.authClientID" ng-required="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'"/>
+                        <div ng-messages="newConn.authClientID.$error" role="alert">
+                            <div ng-message="required" class="my-message">ClientID must be entered.</div>
+                        </div>  
+                    </md-input-container>
+                    <md-input-container flex="25" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'" flex-gt-xs>
+                        <label>Client Secret</label>
+                        <input type="password" ng-model="newConn.authClientSecret" ng-required="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'"/>
+                        <div ng-messages="newConn.authClientSecret.$error" role="alert">
+                            <div ng-message="required" class="my-message">ClientID must be entered.</div>
+                        </div>  
+                    </md-input-container>
+                    <md-input-container flex="25" ng-if="isWebService(newConn.dataStoreTypeCode) && newConn.authType === 'OAUTH2'" flex-gt-xs>
+                        <label>Scope (Optional)</label>
+                        <input type="text" ng-model="newConn.authScope" />
+                    </md-input-container>
+                </div>
+
+                <!-- MQ related input -->
+                <md-subheader ng-if="isMQ(newConn.dataStoreTypeCode)">MQ Access Info</md-subheader>
+                <div layout-gt-sm="row" ng-if="isMQ(newConn.dataStoreTypeCode)">
+                    <md-input-container class="md-block"  flex="25">
+                        <label>MQ Type</label>
+                        <md-select ng-model="newConn.mqType"  ng-required="isMQ(newConn.dataStoreTypeCode)" >
+                            <md-option value="Rabbit MQ">Rabbit MQ</md-option>
+                            <md-option value="Active MQ">Active MQ</md-option>
+                            <md-option value="Kafka">Kafka</md-option>
+                        </md-select>
+                        <div ng-messages="newConn.mqType.$error" role="alert">
+                            <div ng-message="required" class="my-message">MQ type must be selected.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Server(s)</label>
+                        <input ng-model="newConn.mqServer" ng-required="isMQ(newConn.dataStoreTypeCode)" />
+                        <div ng-messages="newConn.mqServer.$error" role="alert">
+                            <div ng-message="required" class="my-message">MQ Server name must be entered.</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Topic / Queue</label>
+                        <input ng-model="newConn.mqQueueName" ng-required="isMQ(newConn.dataStoreTypeCode)"/>
+                        <div ng-messages="newConn.mqQueueName.$error" role="alert">
+                            <div ng-message="required" class="my-message">Topic / Queue must be entered.</div>
+                        </div>  
+                    </md-input-container>
+                    <md-input-container flex="25" flex-gt-xs>
+                        <label>Exchange (Optional)</label>
+                        <input ng-model="newConn.mqExchange" />
+                    </md-input-container>
+                </div>
+
+                 <div class="inset" layout="row" layout-sm="column" layout-align="end center" >
+                    <md-button flex="10" class="md-raised" ng-click="resetForm()">Cancel</md-button>
+                    <md-button flex="10" class="md-primary md-raised" ng-click="createConnection()" ng-disabled="connectionForm.$invalid">Create</md-button>
+                </div>
+
+            </form>
+            </div>
+        </md-content>
+      </md-tab>
+
+
+    </md-tabs>
+  </md-content>
+</div>
