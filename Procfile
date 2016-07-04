@@ -1,1 +1,1 @@
-web: python webui/app.py --PORT 9000
+web: python app.py --PORT 9000
