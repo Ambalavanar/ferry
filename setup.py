@@ -22,7 +22,8 @@ def read_relative_file(filename):
 NAME = 'ferry'
 DESCRIPTION = 'Data Dictionary, Data Mapping and Data Compare tool'
 REQUIREMENTS = [
-    'python-dateutil'
+    'python-dateutil',
+    'flask'
 ]
 __VERSION__ = '0.0.1'
 

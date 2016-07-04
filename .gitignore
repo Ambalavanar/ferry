@@ -91,6 +91,7 @@ ENV/
 # Ignore MacOS X files
 .DS_Store
 
+# Web UI Files
 /node_modules
 node_modules
 .tmp
