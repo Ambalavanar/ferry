@@ -25,6 +25,11 @@
     "angular-messages": "^1.5.5",
     "angular-material": "git+https://github.com/angular/bower-material.git#master"    
   },
+  "devDependencies": {},
+  "engines": {
+    "node": "4.x",
+    "npm": "3.x"
+  },
   "scripts": {
     "prestart": "npm update"
   }
