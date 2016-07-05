@@ -103,4 +103,4 @@ bower_components
 npm-debug.log
 
 # App DB
-.db
+*.db
