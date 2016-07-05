@@ -49,6 +49,7 @@
     iconProvider.icon("icon-csv", "/imgs/icons/csv.svg", 48);
     iconProvider.icon("icon-edit", "/imgs/icons/edit.svg", 48);
     iconProvider.icon("icon-delete", "/imgs/icons/trash.svg", 48);
+    iconProvider.icon("icon-logout", "/imgs/icons/ic_exit_to_app_24px.svg", 48);
     iconProvider.icon("icon-bg", "/imgs/icons/staten-island-ferry.svg", 1200);
     
     //$httpProvider.interceptors.push('authInterceptor');

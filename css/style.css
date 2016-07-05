@@ -711,7 +711,7 @@ a.docs-logo {
   word-wrap: break-word;
 }
 .docs-toolbar-tools {
-  max-width: 864px;
+  /* max-width: 864px; */
   padding: 0;
   margin: 0 24px;
   width: auto;

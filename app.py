@@ -1,54 +1,100 @@
 #!/usr/bin/python
-from flask import Flask 
-from flask import send_from_directory
+from flask import Flask
+from flask import send_from_directory, request, redirect, make_response
 import os
-import json
 from datetime import datetime
+from service.security.api_auth import auth_required, AuthStore
+import traceback
 
 # This method is patch of datetime JSON serialization
 def json_serial(obj):
-	if isinstance(obj, datetime):
-		serial = obj.isoformat()
-		return serial
-    	raise TypeError ("Type not serializable")
+    if isinstance(obj, datetime):
+        serial = obj.isoformat()
+        return serial
+    raise TypeError("Type not serializable")
 
 
 # Flask REST APIs
 app = Flask(__name__, static_url_path='/')
 
+
 @app.route('/')
 @app.route('/home')
 @app.route('/index')
 @app.route('/UI')
+@auth_required
 def index():
-	return send_from_directory('.', 'index.html')
+    return send_from_directory('.', 'index.html')
+
+
+@app.route('/login', methods=['GET'])
+def login():
+    return send_from_directory('.', 'login.html')
+
+
+@app.route('/loginpost', methods=['POST'])
+def login_post():
+    try:
+        username = None
+        password = None
+        if 'username' in request.form:
+            username = request.form["username"]
+        if 'password' in request.form:
+            password = request.form["password"]
+
+        if AuthStore().valid_user(username, password):
+            response = make_response(redirect('/UI'))
+            response.set_cookie("auth-token", str(AuthStore().get_token(username)))
+            response.set_cookie("username", str(username))
+            return response
+    except:
+        traceback.print_exc()
+
+    return send_from_directory('.', 'login.html')
+
+
+@app.route('/logout', methods=['GET', 'POST'])
+def logout():
+    response = make_response(redirect('/login'))
+    response.set_cookie("auth-token", "", expires=0)
+    response.set_cookie("username", "", expires=0)
+    return response
+
 
 @app.route('/UI/<path:filename>')
-def indexHtml5(filename):
-	return send_from_directory('.', 'index.html')
-	
+@auth_required
+def index_html(filename):
+    return send_from_directory('.', 'index.html')
+
+
 @app.route('/views/<path:filename>')
-def getView(filename):
-	return send_from_directory('./views', filename)
+def get_view(filename):
+    return send_from_directory('./views', filename)
+
 
 @app.route('/node_modules/<path:filename>')
-def getNodeModuleFile(filename):
+def get_node_module(filename):
     return send_from_directory('./node_modules', filename)
 
+
 @app.route('/js/<path:filename>')
-def getJavascriptFile(filename):
+def get_js(filename):
     return send_from_directory('./js', filename)
 
+
 @app.route('/css/<path:filename>')
-def getCSSFile(filename):
+def get_css(filename):
     return send_from_directory('./css', filename)
 
+
 @app.route('/imgs/<path:filename>')
-def getImgFile(filename):
+def get_img(filename):
     return send_from_directory('./imgs', filename)
-	
+
+
 # Start application if this module is run as main module.       
 if __name__ == '__main__':
-	port = int(os.environ.get('PORT', 5000))
-	app.run(host='0.0.0.0', port=port)
-
+    AuthStore().init()
+    app.secret_key = 'ARANN'
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <link href='https://fonts.googleapis.com/css?family=Ruda' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <base href="/" />
+</head>
+<body ng-app="ferryApp" ng-controller="LoginController" style="background-color: #f1f1f1;" ng-cloak>
+    <form role="form" name="loginForm" method="POST" action="/loginpost" enctype="multipart/form-data">
+        <md-content class="md-padding" layout="row" style="background-color: #f1f1f1; padding-top: 50px;" layout-align="center center">
+            <md-card style="width: 450px;">
+                <md-card-title style="background: #106CC8; color: #fff;">
+                  <md-card-title-text>
+                    <span class="md-headline">Login</span>
+                  </md-card-title-text>
+                  <md-card-title-media>
+                    <div class="card-media">
+                        <img src="/imgs/icons/ferry-logo.svg" style="height: 45px; width: 150px">
+                    </div>
+                  </md-card-title-media>
+                </md-card-title>
+                <md-card-content>
+                    <div class="md-padding">
+                        <md-input-container class="md-icon-float md-block">
+                          <label>Username</label>
+                          <!-md-icon md-svg-src="/imgs/icons/ic_person_24px.svg" class="name"></md-icon-->
+                          <input ng-model="user.login" name="username" type="text" required>
+                          <div ng-messages="user.login.$error" role="alert">
+                            <div ng-message="required" class="my-message">Username must be entered.</div>
+                          </div>
+                        </md-input-container>
+                        <md-input-container md-no-float class="md-block">
+                          <label>Password</label>
+                          <!--md-icon md-svg-src="/imgs/icons/ic_vpn_key_24px.svg"></md-icon-->
+                          <input ng-model="user.password" name="password" type="password" required>
+                          <div ng-messages="user.password.$error" role="alert">
+                            <div ng-message="required" class="my-message">Password must be entered.</div>
+                          </div>
+                        </md-input-container>
+                        <md-input-container md-no-float class="md-block">
+                          <md-checkbox ng-model="user.rememberMe">Remember Me</md-checkbox>
+                        </md-input-container>
+                    </div>
+                </md-card-content>
+                <md-divider/>
+                <br/>
+                <md-card-actions layout="row" layout-align="center center">
+                  <md-button class="md-raised">Sign Up</md-button>
+                  <md-button type="submit" class="md-raised md-primary" ng-disabled="loginForm.$invalid">Login</md-button>
+                </md-card-actions>
+                <br/>
+            </md-card>
+        </md-content>
+    </form>
+    <script src="/node_modules/angular/angular.js"></script>
+    <script src="/node_modules/angular-aria/angular-aria.js"></script>
+    <script src="/node_modules/angular-animate/angular-animate.js"></script>
+    <script src="/node_modules/angular-material/angular-material.js"></script>
+    <script src="/node_modules/angular-messages/angular-messages.js"></script>
+    <script src="/node_modules/angular-route/angular-route.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.js"></script>
+    <script src="/js/ng-app/app.js"></script>
+    <script src="/js/ng-app/login-controller.js"></script>
+
+</body>
+</html>

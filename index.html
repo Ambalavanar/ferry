@@ -43,7 +43,7 @@
                 <md-button class="md-icon-button" ng-click="openMenu()" hide-gt-sm aria-label="Toggle Menu">
                 <md-icon md-svg-src="imgs/icons/ic_menu_24px.svg"></md-icon>
                 </md-button>
-                <div layout="row" flex class="fill-height">
+                <div layout="row" flex class="fill-height fill-width">
                     <h2 class="md-toolbar-item md-breadcrumb md-headline">
                         <span ng-if="currentPage.name !== currentSection.name">
                         <span hide-sm hide-md>{{currentSection.name}}</span>
@@ -57,8 +57,16 @@
                         </span>
                         <span class="md-breadcrumb-page">{{currentPage | humanizeDoc}}</span>
                     </h2>
-                    <span flex></span> <!-- use up the empty space -->
+                    <form role="form" action="/logout" method="POST" layout="row" flex layout-align="end center">
+                        <md-button type="submit" class="md-icon-button" aria-label="Logout" >
+                            <md-icon md-svg-icon="icon-logout"></md-icon>
+                            <md-tooltip md-direction="bottom">
+                            Logout
+                            </md-tooltip>
+                        </md-button>
+                    </form>
                 </div>
+
             </div>
         </md-toolbar>
 
@@ -81,6 +89,7 @@
     <script src="/node_modules/angular-material/angular-material.js"></script>
     <script src="/node_modules/angular-messages/angular-messages.js"></script>
     <script src="/node_modules/angular-route/angular-route.js"></script>
+    <script src="/node_modules/jquery/dist/jquery.js"></script>
     <script src="/js/ng-app/app.js"></script>
     <script src="/js/ng-app/nav-controller.js"></script>
     <script src="/js/ng-app/home/home-controller.js"></script>

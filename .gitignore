@@ -34,6 +34,9 @@ var/
 pip-log.txt
 pip-delete-this-directory.txt
 
+# Editor
+.idea
+
 # Unit test / coverage reports
 htmlcov/
 .tox/
@@ -98,3 +101,6 @@ node_modules
 .sass-cache
 bower_components
 npm-debug.log
+
+# App DB
+.db
