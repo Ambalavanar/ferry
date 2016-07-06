@@ -19,6 +19,8 @@
             });
        }
 
+       $scope.isInvalid = $location.search().status && $location.search().status === "invalid";
+
   }
 
 })();

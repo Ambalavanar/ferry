@@ -1,10 +1,13 @@
 #!/usr/bin/python
+import os
+import logging
+import logging.handlers
+import ConfigParser
+from datetime import datetime
 from flask import Flask
 from flask import send_from_directory, request, redirect, make_response
-import os
-from datetime import datetime
 from service.security.api_auth import auth_required, AuthStore
-import traceback
+
 
 # This method is patch of datetime JSON serialization
 def json_serial(obj):
@@ -13,6 +16,17 @@ def json_serial(obj):
         return serial
     raise TypeError("Type not serializable")
 
+# Initialize config reader
+config = ConfigParser.ConfigParser()
+config.read('conf/app.conf')
+
+# Initialize logger
+logger = logging.getLogger('Logger')
+logger.setLevel(logging.INFO)
+handler = logging.handlers.RotatingFileHandler(config.get('logging', 'file'))
+formatter = logging.Formatter("%(asctime)s: %(levelname)s - %(name)s - %(message)s")
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 
 # Flask REST APIs
 app = Flask(__name__, static_url_path='/')
@@ -50,7 +64,7 @@ def login_post():
     except:
         traceback.print_exc()
 
-    return send_from_directory('.', 'login.html')
+    return redirect('/login?status=invalid') #send_from_directory('.', 'login.html')
 
 
 @app.route('/logout', methods=['GET', 'POST'])

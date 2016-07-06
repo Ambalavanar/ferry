@@ -2,7 +2,6 @@
 <html>
 <head>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <link href='https://fonts.googleapis.com/css?family=Ruda' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/node_modules/angular-material/angular-material.css">
     <link rel="stylesheet" href="/css/style.css">
     <base href="/" />
@@ -13,7 +12,7 @@
             <md-card style="width: 450px;">
                 <md-card-title style="background: #106CC8; color: #fff;">
                   <md-card-title-text>
-                    <span class="md-headline">Login</span>
+                    <span class="md-display-1">Login</span>
                   </md-card-title-text>
                   <md-card-title-media>
                     <div class="card-media">
@@ -21,6 +20,11 @@
                     </div>
                   </md-card-title-media>
                 </md-card-title>
+                <md-toolbar class="md-warn" ng-if="isInvalid">
+                    <div class="md-toolbar-tools">
+                      <h2 class="md-flex">Invalid username or password entered.</h2>
+                    </div>
+                </md-toolbar>
                 <md-card-content>
                     <div class="md-padding">
                         <md-input-container class="md-icon-float md-block">

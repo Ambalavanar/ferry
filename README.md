@@ -15,15 +15,20 @@ cd ferry/webui
 
 ### Install Dependencies
 Install NodeJS from https://nodejs.org/
-After installation, run npm install from ferry/webui folder.
+After installation, run npm install from ferry folder.
 ```
 npm install
 ```
 You should find that you have one new folder in your project.
  - ```node_modules``` - contains the npm packages for the tools we need.
 
+Install Python dependencies using `pip <https://pip.pypa.io/en/stable/installing/>` from ferry folder.
+```
+pip install -r requirements.txt
+```
+
 ### Running the App
-To start the web application, run the app.py.
+To start the web application, run app.py.
 ```
 python app.py
 ```

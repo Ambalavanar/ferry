@@ -23,7 +23,8 @@ NAME = 'ferry'
 DESCRIPTION = 'Data Dictionary, Data Mapping and Data Compare tool'
 REQUIREMENTS = [
     'python-dateutil',
-    'flask'
+    'flask',
+    'simplejson'
 ]
 __VERSION__ = '0.0.1'
 
