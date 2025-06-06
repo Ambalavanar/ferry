@@ -2,11 +2,15 @@
 import os
 import logging
 import logging.handlers
-import ConfigParser
+try:
+    import ConfigParser  # Python 2
+except ImportError:  # pragma: no cover - Python 3 fallback
+    import configparser as ConfigParser
 from datetime import datetime
 from flask import Flask
 from flask import send_from_directory, request, redirect, make_response
 from service.security.api_auth import auth_required, AuthStore
+import traceback
 
 
 # This method is patch of datetime JSON serialization
